@@ -250,6 +250,7 @@ const TILT = {
         this.autosaveInterval = setInterval(() => {
             if (this.state === 'playing') {
                 Storage.saveProgress({
+                    saveVersion: 1,
                     lives: this.lives,
                     time: this.time,
                     checkpoint: this.currentCheckpoint

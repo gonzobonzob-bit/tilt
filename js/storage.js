@@ -1,5 +1,5 @@
 const Storage = {
-    KEYS: { BEST_TIME: 'tilt_best_time', AUTOSAVE: 'tilt_autosave' },
+    KEYS: { BEST_TIME: 'marble_descent_best_time', AUTOSAVE: 'marble_descent_autosave' },
 
     getBestTime() {
         const t = localStorage.getItem(this.KEYS.BEST_TIME);
