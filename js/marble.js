@@ -4,6 +4,9 @@ const Marble = {
     radius: 0.5,
     tiltForce: 12,
     maxSpeed: 15,
+    jumpForce: 7,
+    canJump: false,
+    jumpCooldown: 0,
 
     create(scene, position) {
         if (this.mesh) this.mesh.dispose();
@@ -33,20 +36,44 @@ const Marble = {
         return this.mesh;
     },
 
-    applyTilt(tiltX, tiltZ) {
+    applyTilt(tiltX, tiltZ, cameraAlpha) {
         if (!this.impostor) return;
+
+        const cos = Math.cos(cameraAlpha);
+        const sin = Math.sin(cameraAlpha);
+        const worldX = tiltX * cos + tiltZ * sin;
+        const worldZ = -tiltX * sin + tiltZ * cos;
 
         const vel = this.impostor.getLinearVelocity();
         const speed = Math.sqrt(vel.x * vel.x + vel.z * vel.z);
 
-        if (speed < this.maxSpeed || (tiltX * vel.x + tiltZ * vel.z) < 0) {
+        if (speed < this.maxSpeed || (worldX * vel.x + worldZ * vel.z) < 0) {
             const force = new BABYLON.Vector3(
-                tiltX * this.tiltForce,
+                worldX * this.tiltForce,
                 0,
-                -tiltZ * this.tiltForce
+                worldZ * this.tiltForce
             );
             this.impostor.applyForce(force, this.mesh.getAbsolutePosition());
         }
+    },
+
+    tryJump(scene) {
+        if (!this.impostor || !this.mesh) return;
+        if (this.jumpCooldown > 0) return;
+
+        var ray = new BABYLON.Ray(this.mesh.position, new BABYLON.Vector3(0, -1, 0), this.radius + 0.15);
+        var hit = scene.pickWithRay(ray, (mesh) => mesh !== this.mesh);
+        if (hit && hit.hit) {
+            this.impostor.applyImpulse(
+                new BABYLON.Vector3(0, this.jumpForce, 0),
+                this.mesh.getAbsolutePosition()
+            );
+            this.jumpCooldown = 0.3;
+        }
+    },
+
+    updateCooldowns(dt) {
+        if (this.jumpCooldown > 0) this.jumpCooldown -= dt;
     },
 
     getPosition() {

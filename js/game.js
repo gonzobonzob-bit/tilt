@@ -92,7 +92,14 @@ const TILT = {
         this.time += dt;
 
         Controls.update();
-        Marble.applyTilt(Controls.tiltX, Controls.tiltZ);
+        Marble.applyTilt(Controls.tiltX, Controls.tiltZ, this.camera.alpha);
+        Marble.updateCooldowns(dt);
+
+        if (Controls.jumpRequested) {
+            Marble.tryJump(this.scene);
+            Controls.jumpRequested = false;
+        }
+
         Course.update(dt);
 
         // Camera follows marble

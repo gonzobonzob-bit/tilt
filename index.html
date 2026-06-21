@@ -65,6 +65,15 @@
             width: 50px; height: 50px; border-radius: 50%;
             background: rgba(68, 170, 255, 0.6); border: 2px solid #4af;
         }
+        #jumpBtn {
+            position: absolute; bottom: 60px; right: 40px;
+            width: 70px; height: 70px; border-radius: 50%;
+            background: rgba(255, 100, 50, 0.5); border: 2px solid rgba(255, 150, 80, 0.7);
+            color: #fff; font-size: 1em; font-weight: bold;
+            display: none; z-index: 20; touch-action: none;
+            cursor: pointer;
+        }
+        #jumpBtn.active { display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -93,8 +102,8 @@
             <h2>How to Play</h2>
             <p>
                 Roll the marble to the finish line!<br><br>
-                <strong>Desktop:</strong> Arrow keys or WASD to tilt the course.<br>
-                <strong>Mobile:</strong> Use the on-screen joystick.<br><br>
+                <strong>Desktop:</strong> Arrow keys or WASD to tilt. Spacebar to jump.<br>
+                <strong>Mobile:</strong> Joystick to tilt. Tap jump button to jump.<br><br>
                 Avoid falling off edges and dodge obstacles.<br>
                 3 lives per run. Checkpoints save your progress.<br>
                 Fastest time wins!
@@ -126,6 +135,7 @@
     <div id="joystick">
         <div id="joystickKnob"></div>
     </div>
+    <button id="jumpBtn" ontouchstart="Controls.jumpRequested = true;">JUMP</button>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/cannon.js"></script>

@@ -1,6 +1,7 @@
 const Controls = {
     tiltX: 0,
     tiltZ: 0,
+    jumpRequested: false,
     keys: {},
     isMobile: false,
     joystickActive: false,
@@ -10,7 +11,13 @@ const Controls = {
     init() {
         this.isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-        window.addEventListener('keydown', (e) => { this.keys[e.code] = true; });
+        window.addEventListener('keydown', (e) => {
+            this.keys[e.code] = true;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                this.jumpRequested = true;
+            }
+        });
         window.addEventListener('keyup', (e) => { this.keys[e.code] = false; });
 
         if (this.isMobile) {
@@ -82,10 +89,13 @@ const Controls = {
 
     showJoystick(show) {
         const el = document.getElementById('joystick');
+        const jumpBtn = document.getElementById('jumpBtn');
         if (this.isMobile && show) {
             el.classList.add('active');
+            jumpBtn.classList.add('active');
         } else {
             el.classList.remove('active');
+            jumpBtn.classList.remove('active');
         }
     }
 };
