@@ -61,14 +61,26 @@ const Marble = {
         if (!this.impostor || !this.mesh) return;
         if (this.jumpCooldown > 0) return;
 
-        var ray = new BABYLON.Ray(this.mesh.position, new BABYLON.Vector3(0, -1, 0), this.radius + 0.15);
-        var hit = scene.pickWithRay(ray, (mesh) => mesh !== this.mesh);
-        if (hit && hit.hit) {
+        var vel = this.impostor.getLinearVelocity();
+        var isGrounded = Math.abs(vel.y) < 1.2;
+
+        if (!isGrounded) {
+            var ray = new BABYLON.Ray(
+                this.mesh.position.clone(),
+                new BABYLON.Vector3(0, -1, 0),
+                this.radius + 0.3
+            );
+            var hit = scene.pickWithRay(ray, function(m) { return m.name !== 'marble'; });
+            if (hit && hit.hit) isGrounded = true;
+        }
+
+        if (isGrounded) {
+            this.impostor.setLinearVelocity(new BABYLON.Vector3(vel.x, 0, vel.z));
             this.impostor.applyImpulse(
                 new BABYLON.Vector3(0, this.jumpForce, 0),
                 this.mesh.getAbsolutePosition()
             );
-            this.jumpCooldown = 0.3;
+            this.jumpCooldown = 0.35;
         }
     },
 
